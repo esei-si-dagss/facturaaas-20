@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/WEB-INF/includes/plantilla.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"                
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:define name="menu">
+        <ui:include src="/WEB-INF/includes/menu-administrador.xhtml"/>
+    </ui:define>
+
+    <ui:define name="tituloPagina">
+        <h1>Formas de pago</h1>
+    </ui:define>
+
+    <ui:define name="contenido">
+        <h:form id="formularioListado">     
+            <b:container fluid="true">
+                <b:panel title="Listado de Formas de Pago" collapsible="false" offset="2" span="8">
+                    <b:dataTable id="tablaListado"  class="tablaListadoClass"
+                                 value="#{formasPagoController.formasPago}"
+                                 var="formaPago" 
+                                 striped="true" 
+                                 page-length="5" page-length-menu="[5,10,20]">
+                        <b:dataTableColumn label="Id">
+                            <h:outputText value="#{formaPago.id}"/>
+                        </b:dataTableColumn>
+                        <b:dataTableColumn label="Nombre">
+                            <h:outputText value="#{formaPago.nombre}" />
+                        </b:dataTableColumn>                    
+
+                        <b:dataTableColumn label="Núm. pagos" orderable="false">
+                            <h:outputText value="#{formaPago.numeroPagos}" />
+                        </b:dataTableColumn>
+
+                        <b:dataTableColumn label="Periodicidad" orderable="false">
+                            <h:outputText value="#{formaPago.periodicidad}" />
+                        </b:dataTableColumn>
+
+                        <b:dataTableColumn label="Activa">
+                            <h:outputText value="Si" rendered="#{formaPago.activo}"/>
+                            <h:outputText value="No" rendered="#{not formaPago.activo}"/>
+                        </b:dataTableColumn>
+
+
+                        <b:dataTableColumn label="" orderable="false">
+                            <b:commandButton id="botonEditar" icon-awesome="pencil" tooltip="Editar" ajax="true" 
+                                             actionListener="#{formasPagoController.doEditar(formaPago)}" 
+                                             update=":formularioEditar"/>
+                            <b:commandButton id="botonBorrar" icon-awesome="trash" tooltip="Desactivar" ajax="true" 
+                                             actionListener="#{formasPagoController.doEliminar(formaPago)}"
+                                             update="@(.tablaListadoClass)"/>
+                        </b:dataTableColumn>                            
+                    </b:dataTable>
+
+                    <f:facet name="footer">
+                        <b:commandButton id="botonNuevo" icon-awesome="plus" value="Crear Forma de Pago" tooltip="Nueva Forma de Pago" ajax="true"
+                                         actionListener="#{formasPagoController.doNueva()}" 
+                                         update=":formularioEditar"/>
+                    </f:facet>
+                </b:panel>
+            </b:container>
+        </h:form>  
+        <h:form id="formularioEditar">
+            <b:container fluid="true">
+                <b:panel title="Editar/Crear Forma de Pago" offset="4" span="4"
+                         rendered="#{not empty formasPagoController.formaPagoActual}" 
+                         collapsible="false">
+                    <b:panelGrid columns="2">
+                    <h:outputLabel value="Nombre" for="nombre"/>
+                    <b:inputText id="nombre" value="#{formasPagoController.formaPagoActual.nombre}" required="true" requiredMessage="Debe indicarse un nombre de Forma de Pago"/>
+
+                    <h:outputLabel value="Núm. pagos" for="numPagos"/>
+                    <b:touchSpin id="numPagos" value="#{formasPagoController.formaPagoActual.numeroPagos}" required="true" min="1" max="12"/>
+
+                    <h:outputLabel value="Periodicidad (días)" for="periodicidad"/>
+                    <b:touchSpin id="periodicidad" value="#{formasPagoController.formaPagoActual.periodicidad}" required="true" min="0" max="356" step="5" />
+
+                    <h:outputLabel value="Activa" for="activa"/>
+                    <b:selectBooleanCheckbox value="#{formasPagoController.formaPagoActual.activo}" caption="Activa"/>
+                    </b:panelGrid>
+                    <b:commandButton value="Guardar Cambios" 
+                                     ajax="true" process="@form" update=":formularioListado:tablaListado :mensajesGlobal :formularioEditar" 
+                                     actionListener="#{formasPagoController.doGuardarEditado()}"  />
+                    <b:commandButton value="Cancelar" immediate="true"
+                                     ajax="true" process="@form" update=":formularioListado:tablaListado :mensajesGlobal :formularioEditar" 
+                                     actionListener="#{formasPagoController.doCancelarEditado()}" />
+                </b:panel>
+            </b:container>
+        </h:form>
+
+    </ui:define>    
+
+</ui:composition>

@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:b="http://bootsfaces.net/ui">
+    <ui:composition>
+        <b:navBar brand="FACTURAaaS" brandHref="/facturaaas/faces/usuario/index.xhtml" position="top" sticky="false" inverse="true">
+            <b:navbarLinks>
+                <b:navCommandLink value="Inicio"   outcome="/usuario/index" iconAwesome="home"/>
+                <b:navCommandLink value="Mi Perfil" outcome="/usuario/perfil.xhtml" iconAwesome="cog"/>
+                <b:navCommandLink value="Mis Clientes" outcome="/usuario/clientes/listado.xhtml" iconAwesome="users"/>
+                <b:navCommandLink value="Mis Facturas" outcome="/usuario/facturas/listado.xhtml" iconAwesome="file"/>
+                <b:navCommandLink value="Mis Pagos" outcome="/usuario/pagos/listado.xhtml" iconAwesome="euro"/>
+
+                <b:navCommandLink rendered="#{autenticacionController.estaAutenticado}"
+                                  value="Desconectar" 
+                                  action="#{autenticacionController.doLogout()}"
+                                  iconAwesome="sign-out"/>
+
+            </b:navbarLinks>
+        </b:navBar>
+    </ui:composition>
+</html>
+

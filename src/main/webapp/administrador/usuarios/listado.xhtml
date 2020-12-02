@@ -1,0 +1,137 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/WEB-INF/includes/plantilla.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"                
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:o="http://omnifaces.org/ui">
+
+    <o:importConstants type="es.uvigo.esei.dagss.facturaaas.entidades.RolUsuario" />
+
+    <ui:define name="menu">
+        <ui:include src="/WEB-INF/includes/menu-administrador.xhtml"/>
+    </ui:define>
+
+    <ui:define name="tituloPagina">
+        <h1>Usuarios</h1>
+    </ui:define>
+
+    <ui:define name="contenido">
+        <h:form id="formularioListado">     
+            <b:container fluid="true">
+                <b:panel title="Listado de Usuarios" collapsible="false" offset="2" span="8">
+                    <b:dataTable id="tablaListado"  class="tablaListadoClass"
+                                 value="#{usuariosController.usuarios}"
+                                 var="usuario" 
+                                 striped="true" 
+                                 page-length="5" page-length-menu="[5,10,20]">
+                        <b:dataTableColumn label="Id">
+                            <h:outputText value="#{usuario.id}"/>
+                        </b:dataTableColumn>
+
+                        <b:dataTableColumn label="Login">
+                            <h:outputText value="#{usuario.login}" />
+                        </b:dataTableColumn>                    
+
+                        <b:dataTableColumn label="Nombre">
+                            <h:outputText value="#{usuario.nombre}" />
+                        </b:dataTableColumn>                  
+
+                        <b:dataTableColumn label="e-mail">
+                            <h:outputText value="#{usuario.email}" />
+                        </b:dataTableColumn>                    
+
+                        <b:dataTableColumn label="Rol" >
+                            <h:outputText value="#{usuario.rol}" />
+                        </b:dataTableColumn>
+
+                        <b:dataTableColumn label="Activo">
+                            <h:outputText value="Si" rendered="#{usuario.activo}"/>
+                            <h:outputText value="No" rendered="#{not usuario.activo}"/>
+                        </b:dataTableColumn>
+
+                        <b:dataTableColumn label="Creación" orderable="false" >
+                            <h:outputText value="#{usuario.creacion}">
+                                <f:convertDateTime pattern="dd/MM/yyyy" locale="es_ES" timeZone="Europe/Madrid"/>
+                            </h:outputText>
+                        </b:dataTableColumn>
+
+                        <b:dataTableColumn label="Último acceso" >
+                            <h:outputText value="#{usuario.acceso}">
+                                <f:convertDateTime pattern="dd/MM/yyyy" locale="es_ES" timeZone="Europe/Madrid"/>
+                            </h:outputText>
+                        </b:dataTableColumn>
+
+                        <b:dataTableColumn label="" orderable="false">
+                            <b:commandButton id="botonEditar" icon-awesome="pencil" tooltip="Editar" ajax="true" 
+                                             actionListener="#{usuariosController.doEditar(usuario)}" 
+                                             update=":formularioEditar"/>
+                            <b:commandButton id="botonBorrar" icon-awesome="trash" tooltip="Desactivar" ajax="true" 
+                                             actionListener="#{usuariosController.doEliminar(usuario)}"
+                                             update="@(.tablaListadoClass)"/>
+                        </b:dataTableColumn>                            
+                    </b:dataTable>
+
+                    <f:facet name="footer">
+                        <b:commandButton id="botonNuevo" icon-awesome="plus" value="Crear Usuario" tooltip="Nuevo Usuario" ajax="true"
+                                         actionListener="#{usuariosController.doNuevo()}" 
+                                         update=":formularioEditar"/>
+                    </f:facet>
+                </b:panel>
+            </b:container>
+        </h:form>  
+        
+        <h:form id="formularioEditar">
+            <b:container fluid="true">
+                <b:panel title="Editar/Crear Usuario" offset="4" span="4"
+                         rendered="#{not empty usuariosController.usuarioActual}" 
+                         collapsible="false">
+                    <b:panelGrid columns="2" >
+                        <h:outputLabel value="Login" for="login"/>
+                        <h:panelGroup>
+                            <b:inputText id="login" value="#{usuariosController.usuarioActual.login}" rendered="#{usuariosController.esNuevo}"
+                                         required="true" requiredMessage="Debe indicarse el login del usuario"/>
+                            <h:outputText value="#{usuariosController.usuarioActual.login}" rendered="#{not usuariosController.esNuevo}"/>
+                        </h:panelGroup>
+                        
+                        <h:outputLabel value="Nombre" for="nombre"/>
+                        <b:inputText id="nombre" value="#{usuariosController.usuarioActual.nombre}" required="true" requiredMessage="Debe indicarse el nombre del usuario"/>
+
+                        <h:outputLabel value="e-mail" for="email"/>
+                        <b:inputText id="email" value="#{usuariosController.usuarioActual.email}" required="true" requiredMessage="Debe indicarse el e-mail del usuario"/>
+
+                        <h:outputLabel value="Rol" for="rol"/>
+                        <b:selectOneMenu value="#{usuariosController.usuarioActual.rol}" ajax="true" >
+                            <f:converter converterId="omnifaces.GenericEnumConverter" />
+                            <f:selectItems value="#{usuariosController.rolesUsuario}"/>
+                        </b:selectOneMenu>
+
+                        <h:outputLabel value="Activo" for="activo"/>
+                        <b:selectBooleanCheckbox value="#{usuariosController.usuarioActual.activo}" caption="Activo"/>
+
+                        <h:outputLabel value="Creación"/>
+                        <h:outputText value="#{usuariosController.usuarioActual.creacion}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" locale="es_ES" timeZone="Europe/Madrid"/>
+                        </h:outputText>
+
+                        <h:outputLabel value="Último acceso" />
+                        <h:outputText value="#{usuariosController.usuarioActual.acceso}">
+                            <f:convertDateTime pattern="dd/MM/yyyy" locale="es_ES" timeZone="Europe/Madrid"/>
+                        </h:outputText>
+
+                    </b:panelGrid>
+                    <b:commandButton value="Guardar Cambios" 
+                                     ajax="true" process="@form" update=":formularioListado:tablaListado :mensajesGlobal :formularioEditar" 
+                                     actionListener="#{usuariosController.doGuardarEditado()}"  />
+                    <b:commandButton value="Cancelar" immediate="true"
+                                     ajax="true" process="@form" update=":formularioListado:tablaListado :mensajesGlobal :formularioEditar" 
+                                     actionListener="#{usuariosController.doCancelarEditado()}" />
+                </b:panel>
+            </b:container>
+        </h:form>
+
+    </ui:define>    
+
+</ui:composition>

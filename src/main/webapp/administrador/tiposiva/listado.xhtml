@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/WEB-INF/includes/plantilla.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"                
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:define name="menu">
+        <ui:include src="/WEB-INF/includes/menu-administrador.xhtml"/>
+    </ui:define>
+
+    <ui:define name="tituloPagina">
+        <h1>Tipos de IVA</h1>
+    </ui:define>
+
+    <ui:define name="contenido">
+        <h:form id="formularioListado">     
+            <b:container fluid="true">
+                <b:panel title="Listado de Tipos de IVA" collapsible="false" offset="2" span="8">
+                    <b:dataTable id="tablaListado"  class="tablaListadoClass"
+                                 value="#{tiposIVAController.tiposIVA}"
+                                 var="tipoIVA" 
+                                 striped="true" 
+                                 page-length="5" page-length-menu="[5,10,20]">
+                        <b:dataTableColumn label="Id">
+                            <h:outputText value="#{tipoIVA.id}"/>
+                        </b:dataTableColumn>
+                        <b:dataTableColumn label="Nombre">
+                            <h:outputText value="#{tipoIVA.nombre}" />
+                        </b:dataTableColumn>                    
+
+                        <b:dataTableColumn label="Porcentaje" orderable="false">
+                            <h:outputText value="#{tipoIVA.porcentaje}" />
+                        </b:dataTableColumn>
+
+                        <b:dataTableColumn label="Activo">
+                            <h:outputText value="Si" rendered="#{tipoIVA.activo}"/>
+                            <h:outputText value="No" rendered="#{not tipoIVA.activo}"/>
+                        </b:dataTableColumn>
+
+
+                        <b:dataTableColumn label="" orderable="false">
+                            <b:commandButton id="botonEditar" icon-awesome="pencil" tooltip="Editar" ajax="true" 
+                                             actionListener="#{tiposIVAController.doEditar(tipoIVA)}" 
+                                             update=":formularioEditar"/>
+                            <b:commandButton id="botonBorrar" icon-awesome="trash" tooltip="Desactivar" ajax="true" 
+                                             actionListener="#{tiposIVAController.doEliminar(tipoIVA)}"
+                                             update="@(.tablaListadoClass)"/>
+                        </b:dataTableColumn>                            
+                    </b:dataTable>
+
+                    <f:facet name="footer">
+                        <b:commandButton id="botonNuevo" icon-awesome="plus" value="Crear Tipo de IVA" tooltip="Nuevo Tipo de IVA" ajax="true"
+                                         actionListener="#{tiposIVAController.doNuevo()}" 
+                                         update=":formularioEditar"/>
+                    </f:facet>
+                </b:panel>
+            </b:container>
+        </h:form>  
+        <h:form id="formularioEditar">
+            <b:container fluid="true">
+                <b:panel title="Editar/Crear Tipo de IVA" offset="4" span="4"
+                         rendered="#{not empty tiposIVAController.tipoIVAActual}" 
+                         collapsible="false">
+                    <b:panelGrid columns="2">
+                    <h:outputLabel value="Nombre" for="nombre"/>
+                    <b:inputText id="nombre" value="#{tiposIVAController.tipoIVAActual.nombre}" required="true" requiredMessage="Debe indicarse un nombre para el Tipo de IVA"/>
+
+                    <h:outputLabel value="Porcentaje" for="porcentaje"/>
+                    <b:inputText id="porcentaje" value="#{tiposIVAController.tipoIVAActual.porcentaje}" required="true" requiredMessage="Debe indicarse un porcentaje">
+                        <f:convertNumber pattern="#0.00"/>
+                    </b:inputText>
+
+                    <h:outputLabel value="Activo" for="activo"/>
+                    <b:selectBooleanCheckbox value="#{tiposIVAController.tipoIVAActual.activo}" caption="Activo"/>
+                    </b:panelGrid>
+                    <b:commandButton value="Guardar Cambios" 
+                                     ajax="true" process="@form" update=":formularioListado:tablaListado :mensajesGlobal :formularioEditar" 
+                                     actionListener="#{tiposIVAController.doGuardarEditado()}"  />
+                    <b:commandButton value="Cancelar" immediate="true"
+                                     ajax="true" process="@form" update=":formularioListado:tablaListado :mensajesGlobal :formularioEditar" 
+                                     actionListener="#{tiposIVAController.doCancelarEditado()}" />
+                </b:panel>
+            </b:container>
+        </h:form>
+
+    </ui:define>    
+
+</ui:composition>

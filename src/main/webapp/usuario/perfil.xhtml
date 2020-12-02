@@ -1,0 +1,161 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/WEB-INF/includes/plantilla.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"                
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"  
+                xmlns:o="http://omnifaces.org/ui">
+
+    <o:importConstants type="es.uvigo.esei.dagss.facturaaas.entidades.TipoFacturacion" />
+
+    <ui:define name="menu">
+        <ui:include src="/WEB-INF/includes/menu-usuario.xhtml"/>
+    </ui:define>
+
+    <ui:define name="tituloPagina">
+        <h1>Perfil de usuario</h1>
+    </ui:define>
+
+    <ui:define name="contenido">
+        <b:container fluid="true">
+            <b:tabView activeIndex="0">
+                <b:tab title="Datos de Usuario">   
+                    <h:form>
+                        <b:panel title="Editar Usuario" span="4"
+                                 id="panelDatosUsuario"
+                                 collapsible="false">
+
+                            <b:panelGrid columns="2" col-spans="3,9">
+                                <h:outputLabel value="Login" />
+                                <h:outputText value="#{perfilController.usuarioActual.login}" />
+
+                                <h:outputLabel value="Nombre" for="nombre"/>
+                                <b:inputText id="nombre" value="#{perfilController.usuarioActual.nombre}" required="true" requiredMessage="Debe indicarse el nombre del usuario"/>
+
+                                <h:outputLabel value="e-mail" for="email"/>
+                                <b:inputText id="email" value="#{perfilController.usuarioActual.email}" required="true" requiredMessage="Debe indicarse el e-mail del usuario"/>
+
+                                <h:outputLabel value="Rol" />
+                                <h:outputText value="#{perfilController.usuarioActual.rol}"/>
+
+                                <h:outputLabel value="Creación"/>
+                                <h:outputText value="#{perfilController.usuarioActual.creacion}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" locale="es_ES" timeZone="Europe/Madrid"/>
+                                </h:outputText>
+
+                                <h:outputLabel value="Último acceso" />
+                                <h:outputText value="#{perfilController.usuarioActual.acceso}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy" locale="es_ES" timeZone="Europe/Madrid"/>
+                                </h:outputText>
+
+                            </b:panelGrid>
+                            <b:commandButton value="Guardar Cambios" 
+                                             ajax="true" process="@form" update=" :mensajesGlobal panelDatosUsuario" 
+                                             actionListener="#{perfilController.doGuardarDatosUsuario()}"  />
+                            <b:commandButton value="Cancelar" immediate="true"
+                                             ajax="true" process="@form" update=":mensajesGlobal  panelDatosUsuario" 
+                                             actionListener="#{perfilController.doCancelarDatosUsuario()}" />                        
+                        </b:panel>
+                    </h:form>
+
+                    <h:form>
+                        <b:panel title="Cambiar Password" offset="1" span="4"
+                                 id="panelPassword"
+                                 collapsible="false">
+                            <b:panelGrid columns="2" col-spans="4,8">
+                                <h:outputLabel value="Nuevo Password" for="password1" />
+                                <b:inputSecret id="password1" value="#{perfilController.password1}" required="true" requiredMessage="Debe indicarse el nuevo password"/>
+
+                                <h:outputLabel value="Repetir Password" for="password2"/>
+                                <b:inputSecret id="password2" value="#{perfilController.password2}" required="true" requiredMessage="Debe repetirse el nuevo password"/>
+                            </b:panelGrid>
+                            <b:commandButton value="Cambiar Password" 
+                                             ajax="true" process="@form" update=" :mensajesGlobal panelPassword" 
+                                             actionListener="#{perfilController.doCambiarPassword()}"  />
+                        </b:panel>
+                    </h:form>
+                </b:tab>
+
+                <b:tab title="Datos de Facturación">
+                    <h:form>
+
+                        <b:panel title="Editar Datos de Facturacion" span="8"
+                                 id="panelDatosFacturacion"
+                                 collapsible="false">
+                            <b:panelGrid columns="2"> 
+                                <b:panelGrid columns="2" col-spans="4,8">
+                                    <h:outputLabel value="Nombre Comercial" for="nombreComercial" />
+                                    <b:inputText id="nombreComercial" value="#{perfilController.datosFacturacionActual.nombreComercial}" 
+                                                 required="true" requiredMessage="Debe indicarse el nombre comercial"/>
+
+                                    <h:outputLabel value="NIF" for="nif"/>
+                                    <b:inputText id="nif" value="#{perfilController.datosFacturacionActual.nif}" 
+                                                 required="true" requiredMessage="Debe indicarse el NIF de facturación"/>
+
+                                    <h:outputLabel value="Cuenta de Pago" for="cuentaF"/>
+                                    <b:inputText id="cuentaF" value="#{perfilController.datosFacturacionActual.cuentaBancaria}"/>
+
+                                    <h:outputLabel value="Tipo de Facturación" for="tipoFacturacion"/>
+                                    <b:selectOneMenu id="tipoFacturacion" value="#{perfilController.datosFacturacionActual.tipo}" ajax="true" >
+                                        <f:converter converterId="omnifaces.GenericEnumConverter" />
+                                        <f:selectItems value="#{perfilController.tiposFacturacion}"/>
+                                    </b:selectOneMenu>
+
+                                    <h:outputLabel value="Forma de Pago por defecto" for="formaPago"/>
+                                    <b:selectOneMenu id="formaPago" value="#{perfilController.datosFacturacionActual.formaPagoPorDefecto}"
+                                                     converter="omnifaces.SelectItemsConverter"> 
+                                        <f:selectItems var="formaPago" value="#{perfilController.listadoFormasPago()}"
+                                                       itemValue="#{formaPago}" 
+                                                       itemLabel="#{formaPago.nombre}" />
+                                    </b:selectOneMenu>
+
+                                    <h:outputLabel value="Tipo de IVA por defecto" for="tipoIVA"/>
+                                    <b:selectOneMenu id="tipoIVA" value="#{perfilController.datosFacturacionActual.tipoIVAPorDefecto}"
+                                                     converter="omnifaces.SelectItemsConverter"> 
+                                        <f:selectItems var="tipoIVA" value="#{perfilController.listadoTiposIVA()}"
+                                                       itemValue="#{tipoIVA}" 
+                                                       itemLabel="#{tipoIVA.nombre} (#{tipoIVA.porcentaje} %)" />
+                                    </b:selectOneMenu>
+                                </b:panelGrid>
+
+                                <b:panelGrid columns="2" col-spans="3,9">
+                                    <h:outputLabel value="Domicilio" for="domicilio" />
+                                    <b:inputText id="domicilio" value="#{perfilController.datosFacturacionActual.direccion.domicilio}"/> 
+
+                                    <h:outputLabel value="Localidad" for="localidad" />
+                                    <b:inputText id="localidad" value="#{perfilController.datosFacturacionActual.direccion.localidad}"/> 
+
+                                    <h:outputLabel value="Cód. Postal" for="cod_postal" />
+                                    <b:inputText id="cod_postal" value="#{perfilController.datosFacturacionActual.direccion.codPostal}"/> 
+
+                                    <h:outputLabel value="Provincia" for="provincia" />
+                                    <b:inputText id="provincia" value="#{perfilController.datosFacturacionActual.direccion.provincia}"/> 
+
+                                    <h:outputLabel value="Teléfono" for="telefonoF"/>
+                                    <b:inputText id="telefonoF" value="#{perfilController.datosFacturacionActual.telefono}"/>
+
+                                    <h:outputLabel value="e-mail" for="emailF"/>
+                                    <b:inputText id="emailF" value="#{perfilController.datosFacturacionActual.email}"/>
+
+                                </b:panelGrid>
+
+                            </b:panelGrid>
+
+                            <b:commandButton value="Guardar Cambios" 
+                                             ajax="true" process="@form" update=" :mensajesGlobal panelDatosFacturacion" 
+                                             actionListener="#{perfilController.doGuardarDatosFacturacion()}"  />
+                            <b:commandButton value="Cancelar" immediate="true"
+                                             ajax="true" process="@form" update=":mensajesGlobal  panelDatosFacturacion" 
+                                             actionListener="#{perfilController.doCancelarDatosFacturacion()}" />
+                        </b:panel>
+                    </h:form>
+                </b:tab>
+            </b:tabView>
+        </b:container>
+    </ui:define>    
+
+
+</ui:composition>
+

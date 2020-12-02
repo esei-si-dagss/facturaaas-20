@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/WEB-INF/includes/plantilla.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"                
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="menu">
+        <ui:include src="/WEB-INF/includes/menu-visitante.xhtml"/>
+    </ui:define>
+
+    <ui:define name="contenido">
+
+        <b:jumbotron style-class="text-center">
+            <h1> Ohhhh! .... </h1>
+
+            <p>Algo ha ido mal</p>
+
+
+            <b:form>
+                <b:commandButton value="Volver a la página principal" action="#{autenticacionController.doLogout()}" look="primary" size="lg"/>
+            </b:form>
+        </b:jumbotron>
+
+
+    </ui:define>
+</ui:composition>

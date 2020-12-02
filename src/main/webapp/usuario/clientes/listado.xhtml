@@ -1,0 +1,90 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/WEB-INF/includes/plantilla.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"                
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:o="http://omnifaces.org/ui">
+
+
+    <ui:define name="menu">
+        <ui:include src="/WEB-INF/includes/menu-usuario.xhtml"/>
+    </ui:define>
+
+    <ui:define name="tituloPagina">
+        <h1>Mis Clientes</h1>
+    </ui:define>
+
+    <ui:define name="contenido">
+        <h:form id="formularioListado">     
+            <b:container fluid="true">
+                <b:panel title="Listado de Clientes" collapsible="false" offset="1" span="9">
+                    <b:panelGrid columns="4" col-spans="6,2,2,2">
+                        <b:inputText value="#{clientesController.textoBusqueda}" />
+                        <b:commandButton value="Buscar por Nombre"  
+                                         actionListener="#{clientesController.doBuscarPorNombre()}"
+                                         update=":formularioListado:tablaListado :mensajesGlobal"/>
+                        <b:commandButton value="Buscar por Localidad"  
+                                         actionListener="#{clientesController.doBuscarPorLocalidad()}"
+                                         update=":formularioListado:tablaListado :mensajesGlobal"/>
+                        <b:commandButton value="Buscar Todos"  
+                                         actionListener="#{clientesController.doBuscarTodos()}"
+                                         update=":formularioListado:tablaListado :mensajesGlobal"/>
+                    </b:panelGrid>
+
+
+                    <b:dataTable id="tablaListado"  class="tablaListadoClass"
+                                 value="#{clientesController.clientes}"
+                                 var="cliente" 
+                                 striped="true" 
+                                 page-length="10" searching="false">
+                        <b:dataTableColumn label="Id">
+                            <h:outputText value="#{cliente.id}"/>
+                        </b:dataTableColumn>
+
+                        <b:dataTableColumn label="Nombre">
+                            <h:outputText value="#{cliente.nombre}" />
+                        </b:dataTableColumn>                    
+
+                        <b:dataTableColumn label="NIF">
+                            <h:outputText value="#{cliente.nif}" />
+                        </b:dataTableColumn>                  
+
+                        <b:dataTableColumn label="Dirección">
+                            <h:outputText value="#{cliente.direccion.domicilio}, #{cliente.direccion.localidad} (#{cliente.direccion.provincia})" />
+                        </b:dataTableColumn>                    
+
+                        <b:dataTableColumn label="Teléfono" >
+                            <h:outputText value="#{cliente.telefono}" />
+                        </b:dataTableColumn>
+
+                        <b:dataTableColumn label="e-mail" >
+                            <h:outputText value="#{cliente.email}" />
+                        </b:dataTableColumn>
+
+
+                        <b:dataTableColumn label="" orderable="false">
+                            <b:commandButton id="botonEditar" icon-awesome="pencil" tooltip="Editar Cliente" ajax="true" 
+                                             actionListener="#{clientesController.doEditar(cliente)}" 
+                                             update=":formularioEditar"
+                                             oncomplete="$('.modal-editar-class').modal('show')"/>                                                                                                                    
+                        </b:dataTableColumn>                            
+                    </b:dataTable>
+
+                    <f:facet name="footer">
+                        <b:commandButton id="botonNuevo" icon-awesome="plus" value="Crear Cliente" tooltip="Nuevo Cliente" ajax="true"
+                                         actionListener="#{clientesController.doNuevo()}" 
+                                         update=":formularioEditar"
+                                         oncomplete="$('.modal-editar-class').modal('show')"/>
+                    </f:facet>
+                </b:panel>
+            </b:container>
+        </h:form>  
+        
+        <ui:include src="fragmento-editar.xhtml"/>
+
+    </ui:define>    
+
+</ui:composition>

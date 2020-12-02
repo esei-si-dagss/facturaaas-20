@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<ui:composition template="/WEB-INF/includes/plantilla.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"                
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:b="http://bootsfaces.net/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="menu">
+        <ui:include src="/WEB-INF/includes/menu-visitante.xhtml"/>
+    </ui:define>
+    <ui:define name="contenido">
+
+        <b:form id="loginForm" >  
+            <b:container>
+
+                <b:row>
+                    <b:column offset="2" span="8">
+                        <b:panel title="FACTURAaaS Login" look="primary" collapsible="false">
+                            <b:column>
+                                <h:outputLabel for="email" value="Login"/>
+                                <b:inputText id="email" title="Login" value="#{loginController.login}"/>
+
+                                <h:outputLabel for="passwd" value="Password"/>
+                                <b:inputSecret id="passwd" title="Password" value="#{loginController.password}"/>
+                                <br/>
+                                <b:commandButton value="Login" action="#{loginController.doLogin()}" look="primary" size="lg" offset="10" span="2"/>
+                            </b:column>
+
+                            <f:facet name="footer">
+                                Usuarios para pruebas: admin Contraseña(admin)  /  ana Contraseña(ana) 
+                            </f:facet>
+                        </b:panel>
+                    </b:column>    
+                </b:row>
+            </b:container>         
+        </b:form>  
+
+    </ui:define>
+</ui:composition>
+

@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:b="http://bootsfaces.net/ui">
+
+    <ui:composition>
+
+        <h:form id="formularioEditar" >
+            <b:modal id="modalEditar" class="modal-editar-class" title="Crear/Editar Cliente">
+                <b:container fluid="true">
+                    <b:panel title="Crear/Editar Cliente" 
+                             rendered="#{not empty clientesController.clienteActual}" 
+                             collapsible="false">
+                        <b:panelGrid columns="2" col-spans="4,8">
+                            <h:outputLabel value="Nombre" for="nombre"/>
+                            <b:inputText id="nombre" value="#{clientesController.clienteActual.nombre}" required="true" requiredMessage="Debe indicarse el nombre del cliente"/>
+
+                            <h:outputLabel value="NIF" for="nif"/>
+                            <b:inputText id="nif" value="#{clientesController.clienteActual.nif}" required="true" requiredMessage="Debe indicarse el NIF del cliente"/>
+
+                            <h:outputLabel value="Domicilio" for="domicilio"/>
+                            <b:inputText id="domicilio" value="#{clientesController.clienteActual.direccion.domicilio}"/>
+
+                            <h:outputLabel value="Localidad" for="localidad"/>
+                            <b:inputText id="localidad" value="#{clientesController.clienteActual.direccion.localidad}"/>
+
+                            <h:outputLabel value="Código Postal" for="codpostal"/>
+                            <b:inputText id="codpostal" value="#{clientesController.clienteActual.direccion.codPostal}"/>
+
+                            <h:outputLabel value="Provincia" for="provincia"/>
+                            <b:inputText id="provincia" value="#{clientesController.clienteActual.direccion.provincia}"/>
+
+                            <h:outputLabel value="Teléfono" for="telefono"/>
+                            <b:inputText id="telefono" value="#{clientesController.clienteActual.telefono}"/>
+
+                            <h:outputLabel value="e-mail" for="email"/>
+                            <b:inputText id="email" value="#{clientesController.clienteActual.email}"/>
+
+                            <h:outputLabel value="Cuenta Bancaria" for="cuenta"/>
+                            <b:inputText id="cuenta" value="#{clientesController.clienteActual.cuentaBancaria}"/>                            
+                        </b:panelGrid>
+
+                        <b:commandButton value="Guardar Cambios" 
+                                         ajax="true" process="@form" update=":formularioListado:tablaListado :mensajesGlobal " 
+                                         actionListener="#{clientesController.doGuardarEditado()}"  
+                                         oncomplete="$('.modal-editar-class').modal('hide')"/>
+
+                        <b:commandButton value="Cancelar" immediate="true"
+                                         ajax="true" process="@form" update=":formularioListado:tablaListado :mensajesGlobal " 
+                                         actionListener="#{clientesController.doCancelarEditado()}" 
+                                         oncomplete="$('.modal-editar-class').modal('hide')" />
+                    </b:panel>
+                </b:container>
+            </b:modal>
+        </h:form>
+
+    </ui:composition>
+</html>

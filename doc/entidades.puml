@@ -1,0 +1,100 @@
+
+@startuml
+hide circle
+
+
+class RolUsuario <<enum>> {
+    USUARIO, ADMINISTRADOR
+}
+
+class EstadoPago <<enum>> {
+    PENDIENTE, PAGADO, ANULADO
+}
+
+class EstadoFactura <<enum>> {
+    EMITIDA, PAGADA, ANULADA, 
+    RECLAMADA, ABONADA
+}
+
+class TipoFacturacion <<enum>>{
+     PARTICULAR, AUTONOMO, 
+     SOCIEDAD_LIMITADA, 
+     SOCIEDAD_ANONIMA, 
+     COOPERATIVA, ONG, OTROS;
+}
+
+class Usuario <<entity>> {
+    Long id;
+    String login;
+    String password;
+    String email;
+    String nombre;
+
+    RolUsuario rol;
+    Boolean activo;
+
+    Date creacion;
+    
+    Date acceso;
+}
+
+class DatosFacturacion <<entity>> {
+  Long id;
+  Usuario usuario;
+
+  String nombreComercial;
+  String nif;
+  Direccion direccion;
+  String telefono;
+  String email;
+  String cuentaBancaria;
+    
+  TipoFacturacion tipo;
+  FormaPago formaPagoPorDefecto;
+  TipoIVA tipoIVAPorDefecto;
+}
+
+class Direccion <<embeddable>> {
+     String domicilio;
+     String localidad;
+     String codPostal;
+     String provincia;
+}
+
+class Cliente <<entity>> {
+     Long id;
+     Usuario propietario;
+
+     String nombre;
+     String nif;
+     Direccion direccion;
+     String telefono;
+     String email;
+     String cuentaBancaria;
+}
+
+class FormaPago <<entity>> {
+    Long id;
+     String nombre;
+     Integer numeroPagos;
+     Integer periodicidad;
+     Boolean activo;
+}
+
+class TipoIVA <<entity>> {
+     Long id;
+     String nombre;
+     Double porcentaje;
+     Boolean activo;
+}    
+    
+Usuario "1"--"1" DatosFacturacion    
+DatosFacturacion "N"--"1" TipoIVA
+DatosFacturacion "N"--"1" FormaPago
+
+
+Usuario "1"--"N" Cliente
+
+
+    
+@enduml
